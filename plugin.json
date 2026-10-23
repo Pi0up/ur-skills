@@ -1,0 +1,14 @@
+{
+  "name": "ur-skills",
+  "description": "User Research (UR) knowledge base suite: orchestrator, source & evidence capture with verbatim verification, 29-rule integrity validator, typed linking & triangulation, human approval & exception workflows, arborescent journeys with layers, and knowledge querying with trust badges.",
+  "version": "0.5.0",
+  "skills": [
+    "ur-orchestrator",
+    "ur-capture",
+    "ur-check",
+    "ur-link",
+    "ur-approve",
+    "ur-ask",
+    "ur-journey"
+  ]
+}

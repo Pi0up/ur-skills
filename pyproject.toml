@@ -1,0 +1,35 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "ur-tools"
+version = "0.5.0"
+description = "CLI tool suite and normative validation engine for User Research (UR) knowledge repositories"
+readme = "README.md"
+requires-python = ">=3.9"
+authors = [
+    { name = "Vincent Perrery" }
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+    "Topic :: Software Development :: Documentation",
+]
+dependencies = [
+    "pyyaml>=6.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/Pi0up/ur-skills"
+Repository = "https://github.com/Pi0up/ur-skills"
+Issues = "https://github.com/Pi0up/ur-skills/issues"
+
+[project.scripts]
+ur-tools = "ur_tools.cli:main"
+
+[tool.setuptools.packages.find]
+include = ["ur_tools*"]
+
+[tool.setuptools.package-data]
+"ur_tools" = ["py.typed"]

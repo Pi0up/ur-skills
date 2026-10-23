@@ -1,0 +1,34 @@
+# Approaches registry
+# socle-ur-spec v0.5 - Section 12
+# For each approach, the repository contains a glossary atom (GLO) and a guide (GDE) in /guides/.
+
+approaches:
+  - id: interview
+    label: "Entretien semi-directif"
+    glossary_id: GLO-2026-001
+    guide_id: GDE-2026-001
+
+  - id: usability_test
+    label: "Test d'utilisabilité"
+    glossary_id: GLO-2026-002
+    guide_id: GDE-2026-002
+
+  - id: survey
+    label: "Enquête quantitative"
+    glossary_id: GLO-2026-003
+    guide_id: GDE-2026-003
+
+  - id: field_observation
+    label: "Observation terrain"
+    glossary_id: GLO-2026-004
+    guide_id: GDE-2026-004
+
+  - id: persona_building
+    label: "Construction de personas"
+    glossary_id: GLO-2026-005
+    guide_id: GDE-2026-005
+
+  - id: journey_mapping
+    label: "Cartographie de parcours"
+    glossary_id: GLO-2026-006
+    guide_id: GDE-2026-006

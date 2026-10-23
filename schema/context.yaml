@@ -1,0 +1,5 @@
+# Context dimensions registry
+# socle-ur-spec v0.5 - Section 23
+# Context dimensions are declared dynamically when observations or contradictions require them.
+
+dimensions: []

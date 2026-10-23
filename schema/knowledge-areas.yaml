@@ -1,0 +1,27 @@
+# Knowledge areas tree for domain coverage and gap map
+# socle-ur-spec v0.5 - Section 19
+
+areas:
+  - id: area-root
+    label: "Périmètre Global"
+    parent: null
+
+  - id: area-onboarding
+    label: "Prise en main & Onboarding"
+    parent: area-root
+
+  - id: area-core-tasks
+    label: "Activités & Tâches principales"
+    parent: area-root
+
+  - id: area-collaboration
+    label: "Collaboration & Partage"
+    parent: area-root
+
+  - id: area-mobile-field
+    label: "Usage nomade & Terrain"
+    parent: area-root
+
+  - id: area-support-incident
+    label: "Gestion des erreurs & Support"
+    parent: area-root

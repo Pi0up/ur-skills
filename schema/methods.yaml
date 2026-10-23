@@ -1,0 +1,73 @@
+# Research methods registry with family, axis and freshness threshold
+# socle-ur-spec v0.5 - Section 10, 14 & 19
+
+methods:
+  - id: interview
+    name: "Semi-structured interview"
+    family: qualitative
+    axis: attitudinal
+    stale_after_days: 180
+    description: "Entretiens individuels qualitatifs"
+
+  - id: usability_test
+    name: "Usability test"
+    family: qualitative
+    axis: behavioral
+    stale_after_days: 120
+    description: "Tests d'utilisabilité sur tâches et scénarios réels ou maquettés"
+
+  - id: field_observation
+    name: "Field observation"
+    family: qualitative
+    axis: behavioral
+    stale_after_days: 180
+    description: "Observation directe en contexte réel d'activité"
+
+  - id: diary_study
+    name: "Diary study"
+    family: qualitative
+    axis: behavioral
+    stale_after_days: 180
+    description: "Journal de bord complété au fil de l'eau par les participants"
+
+  - id: card_sorting
+    name: "Card sorting"
+    family: qualitative
+    axis: attitudinal
+    stale_after_days: 240
+    description: "Tri de cartes ouvert ou fermé pour structurer l'information"
+
+  - id: survey
+    name: "Quantitative survey"
+    family: quantitative
+    axis: attitudinal
+    stale_after_days: 365
+    description: "Questionnaire quantitatif sur échantillon représentatif"
+
+  - id: analytics_review
+    name: "Analytics & telemetry review"
+    family: quantitative
+    axis: behavioral
+    stale_after_days: 90
+    description: "Analyse des logs, entonnoirs et métriques d'usage"
+
+  - id: benchmark
+    name: "Competitive benchmark"
+    family: documentary
+    axis: attitudinal
+    stale_after_days: 180
+    description: "Analyse comparative d'outils et de solutions du marché"
+
+  - id: document_review
+    name: "Document & literature review"
+    family: documentary
+    axis: attitudinal
+    stale_after_days: 365
+    description: "Revue documentaire, rapports internes et études passées"
+
+  - id: expert_review
+    name: "Expert / heuristic review"
+    family: expert
+    axis: attitudinal
+    stale_after_days: 180
+    description: "Évaluation experte par un spécialiste UX/UR"

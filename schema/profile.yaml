@@ -1,0 +1,24 @@
+# Profile and enabled modules configuration
+# socle-ur-spec v0.5 - Section 2.1
+
+# Active validation profile: starter | standard | strict
+# - starter: core only. Every rule is a warning except identifiers, links and anonymisation. One researcher can approve.
+# - standard: enabled modules are fully validated; errors block the commit; exceptions need the double validation.
+# - strict: standard plus open accessibility dimensions blocking approved, expiry of exceptions, and participant-linked declarations allowed only with DPO approval.
+profile: starter
+
+# Enabled modules (core is always enabled: PRJ, STU, PAR, EVD, INS, SRC, MET)
+# Available modules:
+# - jobs-personas: JOB, PER, participant links, validation level
+# - journeys: JRN, layers, shared journeys, emotional and friction layers
+# - accessibility: coverage tables and declared situations
+# - quant: quantitative family, quant_validated level, triangulation across families
+# - recommendations: REC, DEC, rules registry
+# - knowledge: GLO, GDE, approaches registry
+enabled_modules:
+  - jobs-personas
+  - journeys
+  - accessibility
+  - quant
+  - recommendations
+  - knowledge

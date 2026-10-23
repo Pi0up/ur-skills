@@ -9,7 +9,7 @@ description = "CLI tool suite and normative validation engine for User Research 
 readme = "README.md"
 requires-python = ">=3.9"
 authors = [
-    { name = "Vincent Perrery" }
+    { name = "Vincent Perrier-perrery" }
 ]
 classifiers = [
     "Programming Language :: Python :: 3",

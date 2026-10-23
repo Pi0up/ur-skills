@@ -85,4 +85,4 @@ ur-tools generate-views
 ---
 
 ## 📜 Licence
-MIT — Vincent Perrery
+GNU General Public License v3.0 (GPLv3) — Vincent Perrier-perrery

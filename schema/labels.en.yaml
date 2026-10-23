@@ -1,0 +1,61 @@
+# Display labels in English
+# socle-ur-spec v0.5 - Section 6, 14 & 20.4
+
+validation_levels:
+  hypothesis:
+    label: "Clue"
+    badge: "●○○"
+    description: "Hypothesis without direct observation"
+  sensed:
+    label: "Clue"
+    badge: "●○○"
+    description: "Declared or documented without direct observation"
+  observed:
+    label: "Observed"
+    badge: "●●○"
+    description: "Observed qualitatively (min. 3 participants across 2 sessions)"
+  quant_validated:
+    label: "Corroborated"
+    badge: "●●●"
+    description: "Confirmed by quantitative measurement on a defined sample"
+
+confidence_bands:
+  low:
+    label: "Low"
+    badge: "●○○"
+  medium:
+    label: "Medium"
+    badge: "●●○"
+  high:
+    label: "High"
+    badge: "●●●"
+  very_high:
+    label: "Very high"
+    badge: "●●●"
+
+coverage_statuses:
+  covered:
+    label: "Covered"
+    badge: "✅"
+  covered_inferred:
+    label: "Covered (inferred)"
+    badge: "⚠️"
+  incompatible:
+    label: "Incompatible (justified)"
+    badge: "⛔"
+  open:
+    label: "Open"
+    badge: "⭕"
+
+provenance:
+  observed: "Observed"
+  declared: "Declared"
+  documented: "Documented"
+  inferred: "Inferred"
+  rule: "Formal rule"
+
+git_actions:
+  commit: "Save"
+  pull: "Get the team's updates"
+  push: "Share"
+  conflict: "Two versions of this item: keep mine, keep the team's, or keep both"

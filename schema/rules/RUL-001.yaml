@@ -1,0 +1,6 @@
+id: RUL-001
+title: "Minimum sample size for qualitative discovery"
+domain: discovery
+recommendation: "Conduct at least 5 semi-structured interviews with target users when exploring a new problem space."
+confidence: 0.95
+justification: "Nielsen-Norman Group & standard UR discovery heuristic: 5 participants uncover ~85% of usability mechanisms and recurring themes."

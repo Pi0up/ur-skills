@@ -1,0 +1,61 @@
+# Display labels in French
+# socle-ur-spec v0.5 - Section 6, 14 & 20.4
+
+validation_levels:
+  hypothesis:
+    label: "Indice"
+    badge: "●○○"
+    description: "Hypothèse sans observation directe"
+  sensed:
+    label: "Indice"
+    badge: "●○○"
+    description: "Déclaré ou documenté sans observation"
+  observed:
+    label: "Observé"
+    badge: "●●○"
+    description: "Observé qualitativement (min. 3 participants sur 2 sessions)"
+  quant_validated:
+    label: "Corroboré"
+    badge: "●●●"
+    description: "Confirmé par mesure quantitative sur échantillon défini"
+
+confidence_bands:
+  low:
+    label: "Faible"
+    badge: "●○○"
+  medium:
+    label: "Moyenne"
+    badge: "●●○"
+  high:
+    label: "Élevée"
+    badge: "●●●"
+  very_high:
+    label: "Très élevée"
+    badge: "●●●"
+
+coverage_statuses:
+  covered:
+    label: "Couvert"
+    badge: "✅"
+  covered_inferred:
+    label: "Couvert (inféré)"
+    badge: "⚠️"
+  incompatible:
+    label: "Incompatible (justifié)"
+    badge: "⛔"
+  open:
+    label: "Ouvert"
+    badge: "⭕"
+
+provenance:
+  observed: "Observé"
+  declared: "Déclaré"
+  documented: "Documenté"
+  inferred: "Inféré"
+  rule: "Règle formelle"
+
+git_actions:
+  commit: "Enregistrer"
+  pull: "Récupérer les mises à jour"
+  push: "Partager"
+  conflict: "Deux versions en conflit : garder la mienne, garder celle de l'équipe, ou garder les deux"

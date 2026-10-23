@@ -1,0 +1,241 @@
+# Controlled vocabularies for UR Knowledge Base
+# socle-ur-spec v0.5 - Section 14
+
+atom_types:
+  project:
+    prefix: PRJ
+    folder: knowledge/projects
+    module: core
+  study:
+    prefix: STU
+    folder: knowledge/studies
+    module: core
+  insight:
+    prefix: INS
+    folder: knowledge/insights
+    module: core
+  evidence:
+    prefix: EVD
+    folder: knowledge/evidence
+    module: core
+  participant:
+    prefix: PAR
+    folder: knowledge/participants
+    module: core
+  method:
+    prefix: MET
+    folder: knowledge/methods
+    module: core
+  job:
+    prefix: JOB
+    folder: knowledge/jobs
+    module: jobs-personas
+  persona:
+    prefix: PER
+    folder: knowledge/personas
+    module: jobs-personas
+  journey:
+    prefix: JRN
+    folder: knowledge/journeys
+    module: journeys
+  recommendation:
+    prefix: REC
+    folder: knowledge/recommendations
+    module: recommendations
+  decision:
+    prefix: DEC
+    folder: knowledge/decisions
+    module: recommendations
+  source:
+    prefix: SRC
+    folder: sources
+    module: core
+  glossary:
+    prefix: GLO
+    folder: knowledge/glossary
+    module: knowledge
+  guide:
+    prefix: GDE
+    folder: guides
+    module: knowledge
+
+statuses:
+  - draft
+  - to_review
+  - approved
+  - obsolete
+  - replaced
+
+provenances:
+  - observed
+  - declared
+  - documented
+  - inferred
+  - rule
+
+method_families:
+  - qualitative
+  - quantitative
+  - documentary
+  - expert
+
+method_axes:
+  - attitudinal
+  - behavioral
+
+authorship:
+  - human
+  - ai
+  - mixed
+
+profiles:
+  - starter
+  - standard
+  - strict
+
+validation_levels:
+  - hypothesis
+  - sensed
+  - observed
+  - quant_validated
+
+scales:
+  - job
+  - journey
+  - use_case
+
+node_kinds:
+  - step
+  - screen
+  - action
+  - wait
+  - external
+  - ref
+
+layers:
+  - emotional
+  - friction
+  - tools
+  - channels
+
+coverage_statuses:
+  - covered
+  - incompatible
+  - open
+
+disability_dimensions:
+  - visual
+  - auditory
+  - motor
+  - speech
+  - cognitive
+  - psychosocial
+  - chronic_fatigue
+
+origins:
+  - internal
+  - external
+
+rights:
+  - own
+  - licensed
+  - public
+  - unknown
+
+confidence_bands:
+  - low
+  - medium
+  - high
+  - very_high
+
+relations:
+  based_on:
+    from: [insight, recommendation]
+    to: [evidence]
+    description: "Support evidence (never a userflow)"
+  from_study:
+    from: [evidence]
+    to: [study]
+    description: "Collected in this study"
+  produced:
+    from: [study]
+    to: [insight]
+    description: "Study that produced the insight"
+  covers:
+    from: [study, insight]
+    to: [project, knowledge_area]
+    description: "Scope domain or knowledge area"
+  uses:
+    from: [study]
+    to: [method]
+    description: "Method used by the study"
+  concerns:
+    from: [evidence]
+    to: [participant]
+    description: "Source participant"
+  illustrates:
+    from: [evidence]
+    to: [journey_node]
+    description: "Evidence attached to a specific journey node"
+  performs:
+    from: [participant]
+    to: [job]
+    description: "Job performed by participant"
+  derives_from:
+    from: [persona]
+    to: [job]
+    description: "Persona rests on this job"
+  represents:
+    from: [participant]
+    to: [persona]
+    description: "Participant represented by a persona (role: primary | secondary)"
+  part_of:
+    from: [journey]
+    to: [journey]
+    description: "Hierarchy across journey files"
+  serves:
+    from: [journey]
+    to: [job]
+    description: "Journey that serves a job"
+  includes:
+    from: [journey_node]
+    to: [journey]
+    description: "Derived inverse relation from ref nodes"
+    derived: true
+  validated_by:
+    from: [persona]
+    to: [evidence]
+    description: "Observation validating a persona"
+  contradicts:
+    from: [insight, evidence]
+    to: [insight, evidence]
+    description: "Tension to resolve"
+  confirms:
+    from: [evidence]
+    to: [insight]
+    description: "Derived inverse of based_on"
+    derived: true
+  replaces:
+    from: [atom]
+    to: [atom]
+    description: "Replacement of an obsolete atom"
+  recommends:
+    from: [recommendation]
+    to: [study, method]
+    description: "Proposed study or method"
+  informs:
+    from: [decision]
+    to: [recommendation]
+    description: "Decision taken from a recommendation"
+  source_of:
+    from: [source]
+    to: [evidence, study]
+    description: "Origin document"
+  documents:
+    from: [guide]
+    to: [method]
+    description: "Guide covering an approach/method"
+  explains:
+    from: [glossary]
+    to: [method]
+    description: "Glossary entry for an approach/method"

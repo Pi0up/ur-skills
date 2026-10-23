@@ -1,0 +1,32 @@
+# Accessibility disability dimensions
+# socle-ur-spec v0.5 - Section 7.3
+
+dimensions:
+  - id: visual
+    label_fr: Visuel
+    label_en: Visual
+    description: "Déficiences visuelles (cécité, basse vision, daltonisme)"
+  - id: auditory
+    label_fr: Auditif
+    label_en: Auditory
+    description: "Déficiences auditives (surdité, malentendance)"
+  - id: motor
+    label_fr: Moteur
+    label_en: Motor
+    description: "Déficiences motrices (motricité fine, dextérité, mobilité réduite)"
+  - id: speech
+    label_fr: Parole
+    label_en: Speech
+    description: "Troubles de la parole ou de l'élocution"
+  - id: cognitive
+    label_fr: Cognitif
+    label_en: Cognitive
+    description: "Troubles cognitifs, mémoire, attention, apprentissage, dyslexie"
+  - id: psychosocial
+    label_fr: Psychosocial
+    label_en: Psychosocial
+    description: "Troubles psychiques, anxiété, stress post-traumatique, surcharge mentale"
+  - id: chronic_fatigue
+    label_fr: Fatigue chronique
+    label_en: Chronic fatigue
+    description: "Pathologies invalidantes avec fluctuations d'énergie et fatigabilité importante"

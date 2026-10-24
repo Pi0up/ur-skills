@@ -10,7 +10,7 @@ Ce fichier consigne les règles et instructions régissant le comportement des a
 
 ---
 
-## 2. Modèle opératoire Humain–IA (Socle UR Spécification v0.5)
+## 2. Modèle opératoire Humain–IA (Socle UR Spécification v0.5/v0.6)
 - **L'humain décide, l'outil opère** : L'IA propose ; seul un humain approuve et valide.
 - **Traçabilité stricte** :
   - Tout atome créé ou modifié par l'agent IA porte obligatoirement `authored_by: ai` (ou `mixed`) et le statut initial `status: to_review`.
@@ -39,3 +39,13 @@ Ce fichier consigne les règles et instructions régissant le comportement des a
   1. À la demande explicite de l'utilisateur.
   2. À l'achèvement complet d'une nouvelle feature ou skill.
   3. Avant de pousser (`git push`) du code vers le dépôt distant.
+
+---
+
+## 5. Règles méthodologiques pour l'extraction des preuves (Evidence)
+- **Pas de verbatim sans constat, pas de constat sans croisement** : Un verbatim unitaire isolé est trop petit pour constituer une evidence autonome. Une evidence doit obligatoirement porter un constat explicite étayé par un faisceau de citations/faits concordants issus de la même session/source (au moins 2 éléments probants croisés).
+- **Seuil de rejet des opinions nues** : Aucune déclaration d'opinion vague ou subjective sans lien direct avec un fait observable, un comportement ou un obstacle concret ne doit être retenue comme evidence.
+- **Dates partielles documentées** : Les dates incomplètes documentées dans la source sont renseignées au format ISO 8601 partiel (`YYYY-MM` ou `YYYY`). La valeur `collected_at: null` est strictement interdite.
+- **Rattachement obligatoire à un projet** : Le champ `projects` doit obligatoirement contenir au moins un identifiant de projet valide (`[PRJ-YYYY-NNN]`).
+- **Sections obligatoires dès le profil starter** : Tout atome d'evidence doit obligatoirement comporter son `## Résumé` (2 à 4 phrases), son `## Constat & Limites`, ses `## Preuves` (verbatims croisés) et son `## Contexte de recueil`.
+- **Rattachement d'étude obligatoire** : Tout atome d'evidence doit être rattaché à son étude parente via `from_study` pour éviter la prolifération d'atomes orphelins.

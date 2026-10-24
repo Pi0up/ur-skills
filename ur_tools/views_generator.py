@@ -1,5 +1,5 @@
 """Mandatory views generator for UR Knowledge Repositories.
-Implements Section 20.4 of socle-ur-spec v0.5.
+Implements Section 20.4 of socle-ur-spec v0.6.
 Generates: gap-map.md, to-review.md, what-changed.md, insight-sheet.md, journeys/*.mmd
 """
 
@@ -156,8 +156,12 @@ class ViewsGenerator:
                 title = ins.get("title")
                 links = ins.get("links") or {}
                 evd_links = links.get("based_on", [])
+                ctx = ins.get("context")
+                ctx_display = str(ctx) if ctx else "contexte non spécifié"
+
                 lines.append(f"## {aid} · {title}")
                 lines.append(f"- **Confiance** : ●●○ (Moyenne)")
+                lines.append(f"- **Périmètre contextuel** : {ctx_display}")
                 lines.append(f"- **Preuves à l'appui** : {', '.join(str(e) for e in evd_links) if evd_links else 'Aucune preuve liée'}")
                 lines.append(f"- **Statut** : `{ins.get('status')}` | **Auteur** : `{ins.get('authored_by')}`")
                 lines.append("\n---\n")

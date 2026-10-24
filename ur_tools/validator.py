@@ -1,5 +1,5 @@
-"""Normative 29-Rule Validator for UR Knowledge Repositories.
-Implements Section 17 of socle-ur-spec v0.5.
+"""Normative 30-Rule Validator for UR Knowledge Repositories.
+Implements Section 17 of socle-ur-spec v0.6.
 """
 
 from __future__ import annotations
@@ -16,6 +16,7 @@ from ur_tools.verbatim_checker import VerbatimChecker
 
 EMAIL_PATTERN = re.compile(r"\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b")
 PHONE_PATTERN = re.compile(r"\b(?:\+?\d{1,3}[-.\s]?)?(?:\(?\d{2,4}\)?[-.\s]?)?\d{2,4}[-.\s]?\d{2,4}[-.\s]?\d{2,4}\b")
+PARTIAL_DATE_PATTERN = re.compile(r"^\d{4}(-\d{2}(-\d{2})?)?$")
 
 
 @dataclass
@@ -169,9 +170,34 @@ class RepoValidator:
                         message=f"Duplicate identifier '{aid}' found in multiple files: {[str(x) for x in paths]}"
                     ))
 
+        # Build link graph for Rule 8 (orphan check)
+        outgoing_links: Dict[str, Set[str]] = {aid: set() for aid in parsed_atoms}
+        incoming_links: Dict[str, Set[str]] = {aid: set() for aid in parsed_atoms}
+
+        for aid, (file_path, fm, body) in parsed_atoms.items():
+            links = fm.get("links", {}) or {}
+            for rel, targets in links.items():
+                if targets is None:
+                    continue
+                if isinstance(targets, list):
+                    for t in targets:
+                        tid = (t.get("target") if isinstance(t, dict) else str(t)).split("#")[0]
+                        if tid:
+                            outgoing_links[aid].add(tid)
+                            incoming_links.setdefault(tid, set()).add(aid)
+                elif isinstance(targets, str):
+                    tid = targets.split("#")[0]
+                    if tid:
+                        outgoing_links[aid].add(tid)
+                        incoming_links.setdefault(tid, set()).add(aid)
+            if fm.get("source"):
+                sid = str(fm.get("source"))
+                outgoing_links[aid].add(sid)
+                incoming_links.setdefault(sid, set()).add(aid)
+
         # Second pass: validate each atom against rules
         for aid, (file_path, fm, body) in parsed_atoms.items():
-            self._validate_atom(aid, file_path, fm, body, all_ids, report)
+            self._validate_atom(aid, file_path, fm, body, all_ids, report, outgoing_links, incoming_links)
 
         # Rule 22: Registered approaches have glossary and guide
         for approach in self.approaches:
@@ -207,6 +233,8 @@ class RepoValidator:
         body: str,
         all_ids: Set[str],
         report: ValidationReport,
+        outgoing_links: Dict[str, Set[str]],
+        incoming_links: Dict[str, Set[str]],
     ) -> None:
         def issue(rule: int, name: str, msg: str, force_error: bool = False):
             if force_error or self.profile != "starter":
@@ -225,6 +253,12 @@ class RepoValidator:
             if req not in fm:
                 issue(1, "Required frontmatter", f"Missing required frontmatter field '{req}'")
 
+        # Rule 1 (projects): must be non-empty list of project identifiers
+        if atom_type in ("evidence", "insight", "study", "job", "persona", "journey"):
+            projs = fm.get("projects")
+            if projs is None or not isinstance(projs, list) or len(projs) == 0 or not any(p for p in projs if p):
+                issue(1, "Required frontmatter: projects", "Field 'projects' must be a non-empty list of project identifiers.")
+
         # Rule 2: Controlled vocabularies
         valid_statuses = self.vocabularies.get("statuses", ["draft", "to_review", "approved", "obsolete", "replaced"])
         if status and status not in valid_statuses:
@@ -240,7 +274,6 @@ class RepoValidator:
             if isinstance(targets, list):
                 for target in targets:
                     tid = target.get("target") if isinstance(target, dict) else str(target)
-                    # Journey node reference JRN-xxxx#n-xxx
                     base_tid = tid.split("#")[0]
                     if base_tid and base_tid not in all_ids:
                         report.errors.append(ValidationIssue(
@@ -251,6 +284,32 @@ class RepoValidator:
                             atom_id=atom_id,
                             message=f"Broken link target: '{tid}' in relation '{rel}' does not exist."
                         ))
+
+        # Rule 7: Required sections present for the type
+        if atom_type == "evidence":
+            has_resume = bool(re.search(r"^##\s*(Résumé|Resume)", body, re.MULTILINE | re.IGNORECASE))
+            has_constat = bool(re.search(r"^##\s*Constat", body, re.MULTILINE | re.IGNORECASE))
+            has_preuves = bool(re.search(r"^##\s*(Preuves|Contenu)", body, re.MULTILINE | re.IGNORECASE))
+            has_contexte = bool(re.search(r"^##\s*Contexte\s+de\s+recueil", body, re.MULTILINE | re.IGNORECASE))
+
+            missing_sections = []
+            if not has_resume:
+                missing_sections.append("Résumé")
+            if not has_constat:
+                missing_sections.append("Constat & Limites")
+            if not has_preuves:
+                missing_sections.append("Preuves ou Contenu")
+            if not has_contexte:
+                missing_sections.append("Contexte de recueil")
+
+            if missing_sections:
+                issue(7, "Required sections for evidence", f"Evidence atom missing required section(s): {', '.join(missing_sections)}")
+
+        # Rule 8: No orphan atom (has neither incoming nor outgoing links)
+        if atom_type not in ("source", "project"):
+            total_links = len(outgoing_links.get(atom_id, set())) + len(incoming_links.get(atom_id, set()))
+            if total_links == 0:
+                issue(8, "No orphan atom", f"Atom '{atom_id}' is an orphan (has neither incoming nor outgoing links).")
 
         # Rule 11: No personal data pattern (Strict check)
         clean_body = re.sub(r"`[^`]*`", "", body)
@@ -286,11 +345,31 @@ class RepoValidator:
         # Rule 24: Evidence requirements & Verbatim check
         if atom_type == "evidence":
             for req_evd in ["session_id", "collected_at", "source", "locator"]:
-                if req_evd not in fm:
-                    issue(24, "Evidence frontmatter", f"Evidence atom missing required field '{req_evd}'")
+                if req_evd not in fm or fm[req_evd] is None:
+                    issue(24, "Evidence frontmatter", f"Evidence atom missing or null required field '{req_evd}'")
+
+            # Validate date format of collected_at (cannot be null)
+            col_at = fm.get("collected_at")
+            if col_at is not None:
+                col_str = str(col_at).strip()
+                if not PARTIAL_DATE_PATTERN.match(col_str):
+                    issue(24, "Evidence collected_at format", f"Invalid format for 'collected_at': '{col_at}'. Must match YYYY-MM-DD, YYYY-MM, or YYYY.")
+
+            # Verbatim check
             res = self.verbatim_checker.check(path)
             if not res.is_valid:
                 issue(24, "Verbatim verification", res.message)
+
+            # Check crossed verbatims / bare quote threshold:
+            quotes = re.findall(r"^>\s*«?(.*?)»?$", body, re.MULTILINE)
+            clean_quotes = [q.strip() for q in quotes if q.strip() and not q.strip().startswith("[!")]
+            if len(clean_quotes) < 2 and not re.search(r"^##\s*Constat", body, re.MULTILINE | re.IGNORECASE):
+                issue(24, "Evidence crossed verbatims", "Evidence must formulate an explicit finding supported by crossed quotes or facts (single bare quote without finding is rejected).")
+
+            # Check provenance: respondent quotes must be declared
+            prov = fm.get("provenance")
+            if prov == "documented" and any(term in body for term in ["Commentaires des utilisateurs", "répondant", "repondant", "verbatim"]):
+                issue(24, "Evidence provenance", "Verbatim statements from respondents/participants must carry 'provenance: declared', not 'documented'.")
 
         # Rule 25: Authored_by and Approved status
         if authored_by in ("ai", "mixed") and status == "approved" and not reviewed_by:
@@ -308,3 +387,9 @@ class RepoValidator:
             rule_id = fm.get("rule_id") or fm.get("rule")
             if not rule_id or not (self.repo_root / "schema" / "rules" / f"{rule_id}.yaml").exists():
                 issue(28, "Rule recommendation exists", f"Recommendation cites missing rule in schema/rules/: '{rule_id}'")
+
+        # Rule 30: Evidence parent study link
+        if atom_type == "evidence":
+            from_stu = links.get("from_study")
+            if not from_stu:
+                issue(30, "Evidence study link", "Evidence atom must link to a parent study via 'links.from_study'.")

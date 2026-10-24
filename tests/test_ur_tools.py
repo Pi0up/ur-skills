@@ -1,4 +1,4 @@
-"""Comprehensive test suite for UR Tools (socle-ur-spec v0.5)."""
+"""Comprehensive test suite for UR Tools (socle-ur-spec v0.6)."""
 
 import tempfile
 import unittest
@@ -7,6 +7,7 @@ from pathlib import Path
 from ur_tools.id_allocator import IdAllocator, slugify
 from ur_tools.init_repo import init_repository
 from ur_tools.triangulation import compute_confidence_band, compute_validation_level
+from ur_tools.validator import RepoValidator
 from ur_tools.verbatim_checker import VerbatimChecker
 from ur_tools.views_generator import ViewsGenerator
 
@@ -134,6 +135,60 @@ class TestUrTools(unittest.TestCase):
             self.assertTrue(res["gap_map"].exists())
             self.assertTrue(res["to_review"].exists())
             self.assertTrue(res["what_changed"].exists())
+
+    def test_validator_rules_v06(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            tmp_path = Path(tmpdir)
+            init_repository(tmp_path)
+
+            # Create test project and study
+            (tmp_path / "knowledge" / "projects" / "PRJ-2026-001-core.md").write_text(
+                "---\nid: PRJ-2026-001\ntype: project\ntitle: Core Project\nlanguage: fr\nstatus: approved\ncreated: 2026-01-01\nupdated: 2026-01-01\nauthored_by: human\nsensitive: false\n---\n## Context\nCore context.",
+                encoding="utf-8"
+            )
+            (tmp_path / "knowledge" / "studies" / "STU-2026-001-survey.md").write_text(
+                "---\nid: STU-2026-001\ntype: study\ntitle: Survey Study\nlanguage: fr\nstatus: approved\ncreated: 2026-01-01\nupdated: 2026-01-01\nprojects: [PRJ-2026-001]\nauthored_by: human\nsensitive: false\n---\n## Research question\nQuestion.",
+                encoding="utf-8"
+            )
+            (tmp_path / "sources" / "SRC-2026-001-source.md").write_text(
+                "---\nid: SRC-2026-001\ntype: source\ntitle: Test Source\nlanguage: fr\nstatus: approved\ncreated: 2026-01-01\nupdated: 2026-01-01\nauthored_by: human\nsensitive: false\n---\nAlpha verbatim text.\nBeta verbatim text.",
+                encoding="utf-8"
+            )
+
+            # Non-compliant evidence (empty projects, null date, missing sections, bare quote, missing from_study)
+            (tmp_path / "knowledge" / "evidence" / "EVD-2026-001-invalid.md").write_text(
+                """---
+id: EVD-2026-001
+type: evidence
+title: Bare quote
+language: fr
+status: to_review
+created: 2026-10-23
+updated: 2026-10-23
+projects: []
+provenance: documented
+authored_by: ai
+reviewed_by: null
+sensitive: false
+source: SRC-2026-001
+locator: "p. 1"
+session_id: "SESS-01"
+collected_at: null
+links:
+  from_study: null
+---
+> « Alpha verbatim text. »
+""",
+                encoding="utf-8"
+            )
+
+            validator = RepoValidator(tmp_path)
+            report = validator.validate_all()
+            rules_flagged = {issue.rule_number for issue in report.warnings + report.errors if issue.atom_id == "EVD-2026-001"}
+            self.assertIn(1, rules_flagged)   # Projects empty
+            self.assertIn(7, rules_flagged)   # Missing sections
+            self.assertIn(24, rules_flagged)  # collected_at null, bare quote, provenance
+            self.assertIn(30, rules_flagged)  # from_study null
 
 
 if __name__ == "__main__":

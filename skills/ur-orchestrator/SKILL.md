@@ -1,14 +1,14 @@
 ---
 name: ur-orchestrator
 description: >-
-  Master orchestrator for User Research (UR) knowledge repositories (socle-ur-spec v0.5).
+  Master orchestrator for User Research (UR) knowledge repositories (socle-ur-spec v0.6).
   Pilots repository setup, validation profiles (starter, standard, strict), module activation,
   the weekly ritual of the steward, and health checks across the 5 researcher gestures.
 ---
 
 # Skill: UR Orchestrator — Master Repository Orchestrator
 
-This skill orchestrates the lifecycle and governance of the User Research (UR) knowledge repository according to [socle-ur-spec v0.5](../../docs/spec/socle-ur-spec-v0.5.md).
+This skill orchestrates the lifecycle and governance of the User Research (UR) knowledge repository according to [socle-ur-spec v0.6](../../docs/spec/socle-ur-spec-v0.5.md).
 
 ---
 
@@ -24,7 +24,7 @@ This skill orchestrates the lifecycle and governance of the User Research (UR) k
 ```
 1. Capture        ==>  2. Check           ==>  3. Link            ==>  4. Approve         ==>  5. Ask
 (skill: ur-capture)    (skill: ur-check)       (skill: ur-link)        (skill: ur-approve)     (skill: ur-ask)
-(SRC, EVD, PAR)        (29 rules, verbatim)    (triangulation, context)(DoD, double validation)(Trust badges, gap map)
+(SRC, EVD, PAR)        (30 rules, verbatim)    (triangulation, context)(4 DoDs, double valid)  (Trust badges, gap map)
 ```
 
 ---

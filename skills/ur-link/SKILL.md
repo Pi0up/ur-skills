@@ -2,12 +2,12 @@
 name: ur-link
 description: >-
   Companion skill for Gesture 3 (Link). Manages typed relationships, computes method triangulation
-  and ordinal confidence bands, detects contradictions, and arbitrates context dimensions (Section 23).
+  and ordinal confidence bands, detects contradictions, checks study linkage, and arbitrates context dimensions (Section 23).
 ---
 
 # Skill: UR Link — Gesture 3 (Link & Triangulation)
 
-This skill operationalizes the **Link** gesture (Section 20.2 of [socle-ur-spec v0.5](../../docs/spec/socle-ur-spec-v0.5.md)).
+This skill operationalizes the **Link** gesture (Section 20.2 of [socle-ur-spec v0.6](../../docs/spec/socle-ur-spec-v0.5.md)).
 It connects evidence to higher-level objects (insights, jobs, personas, journeys), computes triangulation, and handles tensions or contradictions.
 
 ---
@@ -17,6 +17,7 @@ It connects evidence to higher-level objects (insights, jobs, personas, journeys
 | Relation | From → To | Purpose |
 | :--- | :--- | :--- |
 | `based_on` | insight, recommendation → evidence | Factual support |
+| `from_study` | evidence → study | Parent research study (Rule 30) |
 | `concerns` | evidence → participant | Pseudonymised source participant |
 | `illustrates` | evidence → journey node (`JRN-xxx#n-xxx`) | Concrete observation attached to a step |
 | `performs` | participant → job | Role executed by participant |
@@ -58,6 +59,7 @@ The skill computes the ordinal confidence band based on Section 11:
 When two pieces of evidence or insights conflict:
 1. Link them via `contradicts: [INS-YYYY-NNN]`.
 2. Inspect their **Context** (`context: {dimension: value}`).
+   - If an atom has missing context, explicitly note `[Contexte : non spécifié]`.
 3. If contexts differ (e.g. `site: site-north` vs `site: site-south`), both findings are true within their respective scopes!
 4. If contexts are identical or missing, the skill prompts the researcher:
    > *"Under what specific operating conditions was each observation made?"*

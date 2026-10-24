@@ -1,13 +1,13 @@
 ---
 name: ur-approve
 description: >-
-  Companion skill for Gesture 4 (Approve). Evaluates the 3 Definition of Done questions,
+  Companion skill for Gesture 4 (Approve). Evaluates the 4 Definition of Done questions,
   manages human review traceability (reviewed_by), and handles double validation of rule exceptions.
 ---
 
 # Skill: UR Approve — Gesture 4 (Approve & Exceptions)
 
-This skill operationalizes the **Approve** gesture (Section 20.2 & 20.5 of [socle-ur-spec v0.5](../../docs/spec/socle-ur-spec-v0.5.md)).
+This skill operationalizes the **Approve** gesture (Section 20.2 & 20.5 of [socle-ur-spec v0.6](../../docs/spec/socle-ur-spec-v0.5.md)).
 Only a human researcher can promote an atom to `status: approved`. The skill acts as a strict gatekeeper, ensuring all conditions are fulfilled before approval.
 
 ---
@@ -21,11 +21,12 @@ Only a human researcher can promote an atom to `status: approved`. The skill act
 
 ## Step-by-Step Instructions for the Agent
 
-### Step 1: Evaluate the Definition of Done (3 Questions)
-Before presenting an atom to a human researcher for final approval, verify that the researcher can answer **YES** to these 3 questions:
-1. **Understandable alone?** Can a reader grasp the finding or object in 2 to 4 sentences without consulting other files?
-2. **Traceable to a source?** Does every piece of evidence point to an `SRC-` atom with a verified `locator`?
-3. **Free of personal data?** Is the atom completely free of names, emails, phone numbers, or re-identifying details?
+### Step 1: Evaluate the Definition of Done (4 Questions)
+Before presenting an atom to a human researcher for final approval, verify that the researcher can answer **YES** to these 4 questions:
+1. **Understandable alone?** Can a reader grasp the finding or object in 2 to 4 sentences (Summary) without consulting other files?
+2. **Empirical finding & limits formulated?** Does the atom articulate an explicit finding supported by crossed proof elements or verbatims (no bare quotes), stating its sample limitations?
+3. **Traceable to a source?** Does every piece of evidence point to an `SRC-` atom with a verified locator and a non-null `collected_at` date?
+4. **Free of personal data?** Is the atom completely free of names, emails, phone numbers, or re-identifying details?
 
 ### Step 2: Human Review Gatekeeping
 1. Run pre-approval validation:

@@ -1,32 +1,33 @@
-> **Document** : socle-ur-spec · **Version** : 0.5.0 · **Statut** : draft · **Sources** : chat · **Alias** : socle UR, schema-ur, spec socle, UR schema
+> **Document** : socle-ur-spec · **Version** : 0.6.0 · **Statut** : draft · **Sources** : chat · **Alias** : socle UR, schema-ur, spec socle, UR schema
 
-# UR knowledge base — core specification v0.5
+# UR knowledge base — core specification v0.6
 
 This specification fixes the conventions shared by every knowledge repository built for user researchers. It is the reference for the validation script, the skills, the researchers and the AI agents.
 
 **Language rule.** The structure is in English: folder names, identifiers, frontmatter keys, types, statuses, relations, vocabularies, script messages. The content of atoms can be written in any language (`language` field). This document is written in French for review, but every identifier it defines is English.
 
-Changes from v0.4:
+Changes from v0.5:
 
-- **Core, modules and three validation profiles** (section 2.1): a repository starts small and grows.
-- **Human operating model** (section 20): roles, five gestures, mandatory views, definition of done, onboarding and adoption measures.
-- **Human–AI traceability**: `authored_by` and `reviewed_by`; evidence carries `session_id`, `collected_at` and a `locator`, and quotes are checked against the source.
-- **Coherence fixes**: `confidence` is computed, never entered; the level derives from conditions only; status `valid` becomes `approved`; `confirms` and `includes` become derived relations; rule numbering and the Must list are aligned.
-- **Identifiers** are allocated by script, file names carry a slug, collisions are handled before merge.
-- **Confidence** is read from an ordinal decision table and shown as a band, never as a number; triangulation adds the attitudinal / behavioral axis.
-- **Accessibility**: `psychic` becomes `psychosocial`; declarations come from documentary sources by default, not from named participants; blocking `approved` applies in the `strict` profile only; a DPO question is opened.
-- **Knowledge areas and gap map** (section 19) and a rules registry for `rule` recommendations.
-- **Double validation** gets a fallback for small teams and excludes the AI.
-- **Userflows leave the knowledge base.** A design is not knowledge until it has been used; it becomes a journey (JRN) only then, once its use has been proven through one of the channels of section 9.
+- **Preuves substantielles (EVD) et fin des verbatims unitaires nus** (sections 1, 5, 20.2, 20.5) : pas de verbatim sans constat, pas de constat sans croisement d'au moins deux éléments probants concordants. Un verbatim unitaire isolé est trop petit pour constituer une evidence.
+- **Seuil de rejet des opinions nues** (sections 5, 20.2) : rejet à l'ingestion des déclarations d'opinion sans lien avec un fait observable, un comportement ou un obstacle concret.
+- **Dates partielles documentées et interdiction de `null`** (sections 4, 17 règle 24) : support formel du format ISO 8601 partiel (`YYYY-MM` ou `YYYY`) pour `collected_at` quand le jour ou mois exact est absent de la source. La valeur `collected_at: null` est strictement interdite.
+- **Rattachement projet strict** (sections 4, 17 règle 1) : `projects` doit obligatoirement comporter au moins un identifiant de projet valide.
+- **Bloc quantitatif optionnel (`quant`)** (sections 4, 10.1) : normalisation des métriques (effectif `sample_size`, population `population`, indicateur `metric`, valeur `value`).
+- **Geste Capture interactif** (section 20.2) : questionnaire interactif obligatoire lors de la capture (quoi/cadre, avec qui/échantillon, quand/période).
+- **Definition of Done enrichie** (section 20.5) : 4 questions de Done exigeant un constat explicite et ses limites méthodologiques.
+- **Explicitation du contexte absent** (sections 20.3, 23) : mention textuelle systématique `contexte non spécifié` si le contexte est absent.
+- **Règles de validation par profil** (section 17) : règles 1, 7, 8, 24 renforcées et nouvelle règle 30 (rattachement obligatoire de l'evidence à une étude parente via `from_study`).
 
 ## 1. Principles
 
 - **Markdown is the source of truth.** Graphs, indexes, views and query tools are derived and rebuildable.
-- **One atom = one object = one idea.** An atom must be understandable alone.
+- **One atom = one object = one idea.** An atom must be understandable alone. For evidence (EVD), an atom embodies an explicit finding supported by crossed proof elements, never a bare disconnected quote.
+- **No verbatim without finding, no finding without crossing.** A bare quote is not knowledge. Every evidence atom articulates a verified finding grounded in at least two corroborating quotes or observed facts from the session/source.
+- **No naked opinions.** Declarations of taste, generic opinions or subjective preferences without an observable fact or concrete behavioral obstacle are rejected.
 - **No duplication.** Each piece of information lives in one atom. Aggregates are views, never hand-written atoms.
 - **Observed is not designed.** Evidence comes from observation or measurement. Designed artefacts (userflows, prototypes, design specs) are hypotheses: they never enter the knowledge base as evidence or as journeys until their use has been observed.
 - **Calculated is never entered.** Validation levels, scores and views are computed by scripts and stored in `indexes/` or `views/`, never in the frontmatter.
-- **Explicit beats implicit.** Every relation is declared in the frontmatter or in a node attribute.
+- **Explicit beats implicit.** Every relation is declared in the frontmatter or in a node attribute. Missing context explicitly displays "context not specified".
 - **Human- and AI-readable.** Short prose, explicit headings, controlled vocabularies, stable identifiers.
 - **Anonymised by default.** No directly identifying personal data in the repository.
 - **Exceptions need a second pair of eyes.** Forcing a rule is possible, but only with a double validation by another researcher. Permissions are the same for everyone.
@@ -143,9 +144,18 @@ links:                        # optional, typed links (section 13)
 
 The validation level (section 6), the confidence (section 11) and the coverage tables never appear in the frontmatter: they are computed.
 
-An atom with `authored_by: ai` or `mixed` stays `to_review` until a human sets `reviewed_by`. An evidence atom also requires `session_id`, `collected_at` (collection date, not creation date), `source` (an SRC identifier) and a `locator` (page, paragraph or timecode).
+An atom with `authored_by: ai` or `mixed` stays `to_review` until a human sets `reviewed_by`.
 
-The body opens with a summary of two to four sentences, then the sections required by the type.
+**Evidence frontmatter requirements.** An evidence atom requires:
+- `projects`: at least one non-empty project ID (`[PRJ-YYYY-NNN]`).
+- `session_id`: identifier of the session, wave, or log.
+- `collected_at`: collection date, not creation date. Supported formats: ISO 8601 full (`YYYY-MM-DD`) or partial documented date (`YYYY-MM` or `YYYY`) when the day or month is not documented in the source. The value `null` is strictly forbidden.
+- `source`: an SRC identifier.
+- `locator`: page, paragraph, or timecode.
+- `quant` (optional block for quantitative evidence): `sample_size` (n), `population` (N), `metric`, `value`.
+- `links.from_study`: mandatory parent study link to prevent orphan evidence atoms.
+
+The body opens with a mandatory **Summary** of two to four sentences, followed by the sections required by the type.
 
 ## 5. Atom types and required sections
 
@@ -156,7 +166,7 @@ The body opens with a summary of two to four sentences, then the sections requir
 | project | Context, objectives, audience, timeline |
 | study | Research question, method, sample, period, limits |
 | insight | Finding, evidence, implications, uncertainty |
-| evidence | Content (verbatim quote or observation), collection context, source, locator in the source |
+| evidence | Summary (2–4 sentences), finding and limits (explicit finding, sample limits, no isolated naked quote), crossed content (at least two corroborating verbatim quotes or measured facts), collection context, source with locator |
 | participant | Segment, usage context, pseudonym (no identifying data) |
 | method | Description, when to use, when to avoid, method family |
 | job | Activities, context, tools, constraints, variations by context, accessibility coverage (section 7.3) |
@@ -393,6 +403,12 @@ Two other families are recorded but do not validate on their own:
 
 They add context and can justify a hypothesis, but they never raise an object above `sensed`.
 
+**Quantitative evidence representation.** An evidence atom originating from quantitative research or surveys may record its structured metrics in the frontmatter `quant` block:
+- `sample_size` (n): number of respondents or participants retained in the analysis;
+- `population` (N): total surveyed population or sample frame;
+- `metric`: name of the measured indicator (e.g. `UEQ_attractiveness`, `cart_abandonment_rate`);
+- `value`: numerical or percentage result observed (e.g. `1.1`, `65.6%`).
+
 ### 10.2 Triangulation
 
 Each evidence atom declares its method family through the method it belongs to. The confidence of an insight depends on the **number of distinct families** supporting it, not on the number of methods:
@@ -498,7 +514,7 @@ graph LR
 
 **Statuses:** `draft`, `to_review`, `approved`, `obsolete`, `replaced`. A `replaced` atom must link to its replacement with `replaces`.
 
-**Provenances:** `observed` (seen directly by a researcher), `declared` (said by a participant), `documented` (external source), `inferred` (deduced by judgement or by an AI), `rule` (explicit rule, for recommendations).
+**Provenances:** `observed` (seen directly by a researcher in testing or field observation), `declared` (said by a participant or questionnaire respondent in open verbatims), `documented` (extracted from an existing external third-party report or documentation), `inferred` (deduced by judgement or by an AI), `rule` (explicit rule, for recommendations). Propos de participants (entretiens, questionnaires, commentaires libres) portent impérativement la provenance `declared`.
 
 **Method families:** `qualitative`, `quantitative`, `documentary`, `expert`.
 
@@ -564,14 +580,14 @@ Rules:
 
 The script checks, on each commit and on demand:
 
-1.  Required frontmatter fields are present and valid.
+1.  Required frontmatter fields are present and valid (`projects` must be a non-empty list of project identifiers).
 2.  Controlled vocabularies are respected (types, statuses, provenances, relations, methods, scales, kinds, layers, families, coverage statuses, dimensions).
 3.  Atom identifiers are unique and well formed.
 4.  The file name starts with the identifier, followed by a slug.
 5.  Every link target exists, including node identifiers.
 6.  Frontmatter links and `[[ID]]` references in the body are consistent.
-7.  Required sections are present for the type.
-8.  No orphan atom (no incoming or outgoing link). A warning in `draft` and in the `starter` profile.
+7.  Required sections are present for the type. For evidence atoms, this includes `## Résumé` (2–4 sentences), `## Constat & Limites`, `## Preuves` (or `## Contenu`), and `## Contexte de recueil`. (Warning in starter, Error in standard and strict).
+8.  No orphan atom (no incoming or outgoing link). A warning in `draft` and in the `starter` profile, blocking error in standard and strict.
 9.  Replacement chains contain no loop.
 10. Inferred recommendations have at least two evidence links and a confidence calculation.
 11. No personal data pattern (email, phone) in atoms.
@@ -587,12 +603,13 @@ The script checks, on each commit and on demand:
 21. Journey files: unique node identifiers, existing parents, no cycle, valid kinds, existing `ref` targets.
 22. Every registered approach has a glossary atom and a guide.
 23. Atoms holding disability or health data are flagged `sensitive: true`.
-24. Every evidence atom has `session_id`, `collected_at`, `source` and `locator`; for a text source, the quoted text appears verbatim at the locator.
+24. Every evidence atom has `session_id`, `collected_at` (valid ISO 8601 full `YYYY-MM-DD` or documented partial `YYYY-MM`/`YYYY`, strictly never null), `source` and `locator`; quotes appear verbatim at the locator; the evidence articulates an explicit finding supported by at least two corroborating quotes or observed facts; isolated bare quotes and subjective opinions without observable facts are rejected. (Warning in starter, Error in standard and strict).
 25. Every atom has `authored_by`. An atom authored by `ai` or `mixed` without `reviewed_by` cannot be `approved`.
 26. Identifiers are allocated by the script; collisions are detected before merge.
 27. Every `covers` target exists in `schema/knowledge-areas.yaml`.
 28. Every `rule` recommendation cites an existing file in `/schema/rules/`.
-29. Rules apply to the enabled modules only. In the `starter` profile, every rule except 3, 5 and 11 is a warning.
+29. Rules apply to the enabled modules only. In the `starter` profile, rules except 3, 5 and 11 report warnings. In `standard` and `strict`, rule violations block commits and approvals.
+30. Every evidence atom is linked to its parent study via `from_study` (`links.from_study`). (Warning in starter, Error in standard and strict).
 
 ## 18. Priorities
 
@@ -629,11 +646,11 @@ The schema is strict so that the tool can be simple. The researcher should never
 
 | Gesture | The researcher | The skill |
 | ------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
-| **Capture** | Hands over a document or a note and answers a few questions: what was observed, with whom, when. | Creates SRC, EVD and PAR atoms, fills the frontmatter, proposes atoms. |
-| **Check** | Reads each proposed atom next to its source; corrects or rejects. | Shows each quote with its locator; runs the verbatim check. |
-| **Link** | Accepts or edits suggested links to insights, jobs and areas. | Suggests links and validates targets. |
-| **Approve** | Moves an atom to `approved`. | Refuses if a rule fails. |
-| **Ask** | Asks a question or hands over a brief. | Answers from atoms, with trust badge and gaps. |
+| **Capture** | Hands over a document or a note and answers interactive questions: what was observed/task context, with whom/sample, and when/period. | Guides questions, applies value threshold (rejects bare subjective opinions), groups corroborating quotes into solid evidence with explicit findings, creates SRC, EVD and PAR atoms, fills frontmatter. |
+| **Check** | Reads each proposed atom next to its source; corrects or rejects. | Shows each quote with its locator; runs the verbatim check and rule linting. |
+| **Link** | Accepts or edits suggested links to insights, jobs and areas. | Suggests links and validates targets; checks parent study connection. |
+| **Approve** | Moves an atom to `approved`. | Refuses if any rule fails. |
+| **Ask** | Asks a question or hands over a brief. | Answers from atoms, with trust badge, context explicit status, and gaps. |
 
 ### 20.3 Rules for the AI
 
@@ -641,7 +658,8 @@ The schema is strict so that the tool can be simple. The researcher should never
 - Only a human sets `reviewed_by` and moves an atom to `approved`. The AI never promotes a status or a level.
 - Evidence quotes are checked mechanically against the source text at the locator.
 - The AI is never `requested_by` nor `confirmed_by` for an exception.
-- When the skill answers a question, it cites atom identifiers, states the band and the gaps, and says so when the repository holds nothing.
+- When the skill answers a question or presents views, it cites atom identifiers, states the trust band and gaps, and if an atom has `context: null` or no context dimension, it explicitly states `[contexte non spécifié]`, never generalizing silently.
+- The AI rejects isolated bare quotes and subjective opinions without observable facts during capture.
 
 ### 20.4 Mandatory views
 
@@ -650,14 +668,18 @@ Generated into `/views/` (Must):
 - **Gap map** (section 19).
 - **To review**: atoms in `to_review`, pending and active exceptions with their due date.
 - **What changed**: atoms added or changed since a date, with the kind of author.
-- **Insight sheet**: finding, evidence with quotes, trust badge, contradictions.
+- **Insight sheet**: finding, evidence with quotes, trust badge, contradictions, explicit context mention.
 - **Journey rendering**: Mermaid tree generated from the file (section 8.5).
 
 Labels come from `schema/labels.*.yaml` in the reader’s language; identifiers and keys stay English. Insights and recommendations use the same three notches as levels (section 6): *low* reads ●○○, *medium* ●●○, *high* and *very high* ●●●. Provenance, level, status and band stay in the detail, never at first sight.
 
 ### 20.5 Definition of done and curation
 
-An atom can be approved when a human answers yes to three questions: is it understandable alone, in two to four sentences? Can it be traced to a source, with a locator? Is it free of personal data?
+An atom can be approved when a human answers yes to four questions:
+1. **Compréhensible seul** : l'atome est-il intelligible isolément en deux à quatre phrases (résumé) ?
+2. **Constat empirique étayé et limites** : formule-t-il un constat observable explicite étayé par un croisement de preuves probantes (pas de citation nue isolée) et précise-t-il ses limites de représentativité ?
+3. **Traçabilité mécanique** : est-il tracé vers une source SRC vérifiée mot à mot au locator exact ?
+4. **Zéro donnée personnelle** : est-il totalement exempt de données personnelles directement identifiantes ?
 
 The steward holds a short weekly ritual (about 20 minutes): review the `to_review` list, resolve `contradicts` links, handle pending exceptions, retire `obsolete` atoms.
 
@@ -672,6 +694,7 @@ The steward holds a short weekly ritual (about 20 minutes): review the `to_revie
 ## 21. Open points
 
 - Calibrate the validation thresholds and the confidence decision table on the pilot (v0.6).
+- Format and retention policy for discarded raw extracts under the rejection threshold: whether they are permanently deleted or retained in a temporary extraction scratch buffer.
 - Place of documentary and expert sources in the decision table (cap).
 - Threshold for splitting a shared journey when job divergence grows.
 - Calibration of the entry threshold for designed flows (section 9), and the query format of usage-data SRC atoms.
